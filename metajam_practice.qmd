@@ -1,0 +1,54 @@
+---
+title: "metajam"
+date: "30 August 2023"
+format: html
+editor: visual
+execute: 
+  warning: false
+---
+
+```{r}
+library(metajam)
+library(tidyverse)
+library(viridis)
+```
+
+```{r}
+data_obj <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/urn%3Auuid%3A7fc6f6db-c5ea-426a-a743-1f2edafb43b8"
+path <- "~/EDS214/EDS214-APIs"
+# download data and metadata
+download_d1_data(data_obj, path)
+
+language <- read_csv(here::here("doi_10.5063_F1N58JPP__household_language__csv", "household_language.csv"))
+```
+
+### Compute the percentage of Alaskan household speaking only English from 2009 to 2015
+
+```{r}
+lang_eng_fr <- language %>%
+  filter(Year >= 2009 & Year <= 2015) %>%
+  select(Year, total, speak_only_english, french_incl_patois_cajun) %>%
+  summarise(total_eng = sum(speak_only_english), 
+            total = sum(total), 
+            percent_only_eng = (total_eng / total) * 100, 
+            total_fr = sum(french_incl_patois_cajun),
+            total = sum(total), 
+            percent_only_fr = (total_fr / total) * 100)
+
+lang_eng_fr
+```
+
+### Compare percent only speaking English to percent speaking French
+
+```{r}
+lang_eng_fr %>%
+  select(percent_only_eng, percent_only_fr) %>%
+  rename(only_english = percent_only_eng, french_incl_patois_cajun = percent_only_fr) %>%
+  pivot_longer(cols = everything(), names_to = "language", values_to = "percent") %>%
+ggplot(., aes(x = language, y = percent, fill = language)) +
+  geom_bar(stat = "identity") +
+  theme_linedraw() +
+  scale_fill_viridis_d(begin = 0.2, end = 0.6, labels=c("French", "Only English")) +
+  labs(fill = "Language", title = "English and French usage in Alaskan households, 2009-2015")
+```
+

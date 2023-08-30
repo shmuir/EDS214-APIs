@@ -1,0 +1,60 @@
+---
+title: "USGS Data"
+format: html
+editor: visual
+---
+
+```{r}
+library(dataRetrieval)
+library(tidyverse)
+```
+
+```{r}
+siteNumber <- "11118500"
+parameterCd <- "00060" # Discharge
+startDate <- "2023-08-19"
+endDate <- "2023-08-22"
+
+discharge <- readNWISdv(siteNumber, parameterCd, startDate, endDate)
+
+discharge <- discharge %>%
+  rename(discharge = X_00060_00003)
+```
+
+```{r}
+ggplot(discharge, aes(Date, discharge)) +
+  geom_line() +
+  geom_point() +
+  labs(y = "Discharge (ft³/s)",
+       caption = "https://waterdata.usgs.gov/nwis/uv?site_no=11118500",
+       title = "Ventura River discharge - Tropical Storm Hillary") +
+  theme_linedraw()
+```
+
+### What was the maximum discharge during this time period?
+
+```{r}
+max(discharge$discharge)
+```
+
+- How does this compare to the discharge during the storm on 2023-01-09?
+
+```{r}
+startDate2 <- "2023-01-08"
+endDate2 <- "2023-01-09"
+
+discharge2 <- readNWISdv(siteNumber, parameterCd, startDate2, endDate2)
+
+discharge2 <- discharge2 %>%
+  rename(discharge = X_00060_00003)
+
+max(discharge2$discharge)
+```
+
+The max discharge for the time period 2023-08-19 to 2023-08-22 (44.9 ft³/s) is less than the discharge on 2023-01-09 (68.7 ft³/s).
+
+### How would you determine when the stream gauge recording started?
+
+On the legacy real-time page (https://waterdata.usgs.gov/nwis/uv?site_no=11118500&legacy=1) it says that discharge data is available starting in 1988-10-01. 
+
+
