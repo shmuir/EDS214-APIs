@@ -14,10 +14,10 @@ library(viridis)
 ```
 
 ```{r}
-data_obj <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/urn%3Auuid%3A7fc6f6db-c5ea-426a-a743-1f2edafb43b8"
-path <- "~/EDS214/EDS214-APIs"
+#data_obj <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/urn%3Auuid%3A7fc6f6db-c5ea-426a-a743-1f2edafb43b8"
+#path <- "~/EDS214/EDS214-APIs"
 # download data and metadata
-download_d1_data(data_obj, path)
+#download_d1_data(data_obj, path)
 
 language <- read_csv(here::here("doi_10.5063_F1N58JPP__household_language__csv", "household_language.csv"))
 ```
@@ -48,7 +48,7 @@ lang_eng_fr %>%
 ggplot(., aes(x = language, y = percent, fill = language)) +
   geom_bar(stat = "identity") +
   theme_linedraw() +
-  scale_fill_viridis_d(begin = 0.2, end = 0.6, labels=c("French", "Only English")) +
+  scale_fill_viridis_d(begin = 0.2, end = 0.6, labels = c("French", "Only English")) +
   labs(fill = "Language", title = "English and French usage in Alaskan households, 2009-2015")
 ```
 
